@@ -21,8 +21,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.8.0</version>
             <configuration>
-                <source>8</source>
-                <target>8</target>
+                <source>16</source>
+                <target>16</target>
             </configuration>
         </plugin>
         <plugin>
@@ -34,7 +34,7 @@
           </descriptorRefs>
           <archive>
               <manifest>
-                <mainClass>com.dmitriy.UsbTesting.App</mainClass>
+                <mainClass>com.usbregistration.app.App</mainClass>
               </manifest>
           </archive>
       </configuration>
@@ -52,12 +52,12 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+	<dependency>
+    	<groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-api</artifactId>
+    	<version>5.13.0-M3</version>
+    	<scope>test</scope>
+	</dependency>
     <dependency>
       <groupId>net.codecrete.usb</groupId>
       <artifactId>java-does-usb</artifactId>
