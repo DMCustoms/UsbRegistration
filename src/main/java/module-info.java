@@ -3,6 +3,7 @@ module UsbRegistration {
 	exports com.usbregistration.app.usb;
 	exports com.usbregistration.app.graphics;
 	exports com.usbregistration.app.dbutils;
+	exports com.usbregistration.app.utils;
 
 	requires transitive java.desktop;
 	requires transitive net.codecrete.usb;

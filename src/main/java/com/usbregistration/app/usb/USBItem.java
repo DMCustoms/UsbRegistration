@@ -1,8 +1,8 @@
 package com.usbregistration.app.usb;
 
-public record USBItem(String serialNumber, String productName, int vendorID, int productID) {
+public record USBItem(String serialNumber, String productName, String vendorID, String productID) {
 
-	public USBItem(String serialNumber, String productName, int vendorID, int productID) {
+	public USBItem(String serialNumber, String productName, String vendorID, String productID) {
 		this.serialNumber = serialNumber;
 		this.productName = productName;
 		this.vendorID = vendorID;

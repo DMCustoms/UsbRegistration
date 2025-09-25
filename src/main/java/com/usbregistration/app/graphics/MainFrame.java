@@ -23,6 +23,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 
@@ -38,15 +39,17 @@ public class MainFrame extends JFrame {
 	private JScrollPane jScrollPane;
 	private JList<USBItem> findedDevices;
 	private JButton findDevices;
+	private JButton registerDevice;
+	private JButton checkDevice;
 	private JCheckBox filtrationByName;
 	private JLabel dbState;
 
 	public MainFrame() {
 		setResizable(false);
-		setTitle("UsbRegistration");
+		setTitle("Регистрация USB-носителя");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		setSize(new Dimension(510, 370));
+		setSize(new Dimension(663, 248));
 		initMenu();
 		initContentPane();
 		setJMenuBar(jMenuBar);
@@ -62,14 +65,14 @@ public class MainFrame extends JFrame {
 		
 		connectDBFile = new JMenuItem("Подключить файл БД", KeyEvent.VK_O);
 		connectDBFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-		connectDBFile.addActionListener((_) -> new ConnectDBFileChooser(this));
+		connectDBFile.addActionListener((ae) -> new DBFileChooser(this, JFileChooser.OPEN_DIALOG));
 		
 		createDBFile = new JMenuItem("Создать файл БД", KeyEvent.VK_C);
 		createDBFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
-		createDBFile.addActionListener((_) -> new CreateDBFileChooser(this));
+		createDBFile.addActionListener((ae) -> new DBFileChooser(this, JFileChooser.SAVE_DIALOG));
 		
 		exit = new JMenuItem("Выйти", KeyEvent.VK_E);
-		exit.addActionListener((_) -> System.exit(0));
+		exit.addActionListener((ae) -> System.exit(0));
 		exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));	
 		
 		jmFile.add(connectDBFile);
@@ -89,50 +92,67 @@ public class MainFrame extends JFrame {
 		findedDevices.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		jScrollPane = new JScrollPane(findedDevices);
-		jScrollPane.setBounds(27, 12, 454, 229);
+		jScrollPane.setBounds(27, 12, 454, 131);
 		contentPane.add(jScrollPane);
 		
 		filtrationByName = new JCheckBox("Фильтровать по названию устройства");
-		filtrationByName.setBounds(37, 254, 277, 25);
+		filtrationByName.setBounds(37, 151, 277, 25);
 		filtrationByName.setSelected(true);
 		contentPane.add(filtrationByName);
 		
-		findDevices = new JButton("Обнаружить ус-ва");
-		findDevices.setMargin(new Insets(2, 6, 2, 6));
-		findDevices.setBounds(322, 253, 147, 27);
+		findDevices = new JButton("Обнаружить");
+		findDevices.setEnabled(false);
+		findDevices.setBounds(493, 25, 147, 27);
 		findDevices.setActionCommand("find_devices");
 		findDevices.addActionListener(new FindUSBButtonListener(this, filtrationByName));
 		contentPane.add(findDevices);
 		
+		registerDevice = new JButton("Регистрировать");
+		registerDevice.setBounds(493, 64, 147, 27);
+		registerDevice.setEnabled(false);
+		registerDevice.addActionListener((ae) -> new RegistrationFrame(this, findedDevices.getSelectedValue()));
+		contentPane.add(registerDevice);
+		
+		checkDevice = new JButton("Проверить");
+		checkDevice.setBounds(493, 103, 147, 27);
+		checkDevice.setEnabled(false);
+		contentPane.add(checkDevice);
+		
 		dbState = new JLabel(DBStates.DATABASE_IS_DISCONNECTED.state);
-		dbState.setBounds(27, 280, 170, 25);
+		dbState.setBounds(438, 155, 170, 25);
 		contentPane.add(dbState);
 	}
 	
 	private void preconnectDB() {
-		String path = CFReader.INSTANCE.readConfigureFile();
+		String path = CFReader.INSTANCE.readConfigureFile(this);
 		if (!path.equals("")) {
-			if (DBConnector.INSTANCE.connectDB(path)) {
-				dbState.setText(DBStates.DATABASE_IS_CONNECTED.state);
-				createDBFile.setEnabled(false);
-				connectDBFile.setEnabled(false);
+			if (DBConnector.INSTANCE.connectDB(path, this)) {
+				setDBState(DBStates.DATABASE_IS_CONNECTED);
 			}
 		}
 	}
 	
 	public void setUSBList(USBItem[] deviceList) {
 		findedDevices.setListData(deviceList);
+		registerDevice.setEnabled(true);
+		checkDevice.setEnabled(true);
 	}
 	
 	public void setDBState(DBStates state) {
-		if (state == DBStates.DATABASE_IS_CONNECTED) dbState.setText(DBStates.DATABASE_IS_CONNECTED.state);
-		else if (state == DBStates.DATABASE_IS_DISCONNECTED) dbState.setText(DBStates.DATABASE_IS_DISCONNECTED.state);
+		if (state == DBStates.DATABASE_IS_CONNECTED) { 
+			dbState.setText(DBStates.DATABASE_IS_CONNECTED.state); 
+			createDBFile.setEnabled(false);
+			connectDBFile.setEnabled(false);
+			findDevices.setEnabled(true);
+		}
+		else if (state == DBStates.DATABASE_IS_DISCONNECTED) {
+			dbState.setText(DBStates.DATABASE_IS_DISCONNECTED.state);
+			createDBFile.setEnabled(true);
+			connectDBFile.setEnabled(true);
+			findDevices.setEnabled(false);
+		}
 	}
-	
-	public void setDBButtonsDisabled() {
-		createDBFile.setEnabled(false);
-		connectDBFile.setEnabled(false);
-	}
+
 }
 
 

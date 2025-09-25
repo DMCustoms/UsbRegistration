@@ -10,14 +10,16 @@ import javax.swing.JFileChooser;
 import com.usbregistration.app.dbutils.DBConnector;
 import com.usbregistration.app.dbutils.DBStates;
 import com.usbregistration.app.graphics.MainFrame;
+import com.usbregistration.app.graphics.ModalDialog;
 import com.usbregistration.app.utils.CFReader;
+import com.usbregistration.app.utils.DialogTypes;
 
-public class JFileChooserListener implements ActionListener {
+public class DBFileChooserListener implements ActionListener {
 	
 	private JFileChooser context;
 	private MainFrame mainFrameContext;
 	
-	public JFileChooserListener(JFileChooser context, MainFrame mainFrameContext) {
+	public DBFileChooserListener(JFileChooser context, MainFrame mainFrameContext) {
 		this.context = context;
 		this.mainFrameContext = mainFrameContext;
 	}
@@ -29,21 +31,21 @@ public class JFileChooserListener implements ActionListener {
 			File database = new File(path);
 			try {
 				if(database.createNewFile()) {
-					if (DBConnector.INSTANCE.createDB(path)) {
-						CFReader.INSTANCE.createConfigureFile(path);
+					if (DBConnector.INSTANCE.createDB(path, mainFrameContext)) {
+						CFReader.INSTANCE.createConfigureFile(path, mainFrameContext);
 						mainFrameContext.setDBState(DBStates.DATABASE_IS_CONNECTED);
-						mainFrameContext.setDBButtonsDisabled();
+						new ModalDialog(mainFrameContext, DialogTypes.DATABASE_CREATE);
 					}
 				}
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				new ModalDialog(mainFrameContext, DialogTypes.DB_CREATION_ERROR);
 			}
 		} else if (context.getDialogType() == JFileChooser.OPEN_DIALOG && e.getActionCommand().equals("ApproveSelection")) {
 			String path = context.getSelectedFile().getAbsolutePath();
-			if (DBConnector.INSTANCE.connectDB(path)) {
-				CFReader.INSTANCE.createConfigureFile(path);
+			if (DBConnector.INSTANCE.connectDB(path, mainFrameContext)) {
+				CFReader.INSTANCE.createConfigureFile(path, mainFrameContext);
 				mainFrameContext.setDBState(DBStates.DATABASE_IS_CONNECTED);
-				mainFrameContext.setDBButtonsDisabled();
+				new ModalDialog(mainFrameContext, DialogTypes.DATABASE_CONNECTED);
 			}
 		}	
 	}

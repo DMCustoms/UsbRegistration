@@ -18,7 +18,7 @@ public enum USBItemsList {
 		String regex = ".*(disk|Disk|DISK).*";
 		int index = 0;
 			for (UsbDevice device : devices) {
-				USBItem tmpItem = new USBItem(device.getSerialNumber(), device.getProduct(), device.getVendorId(), device.getProductId());
+				USBItem tmpItem = new USBItem(device.getSerialNumber(), device.getProduct(), Integer.toString(device.getVendorId()), Integer.toString(device.getProductId()));
 				usbItems[index] = tmpItem;
 				if (device.getProduct() != null && device.getProduct().matches(regex)) tmpList.add(tmpItem);
 				index++;
