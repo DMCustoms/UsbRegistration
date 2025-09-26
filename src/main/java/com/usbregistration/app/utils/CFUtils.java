@@ -9,11 +9,12 @@ import java.io.IOException;
 import com.usbregistration.app.graphics.MainFrame;
 import com.usbregistration.app.graphics.ModalDialog;
 
-public enum CFReader {
+public class CFUtils {
 
-	INSTANCE;
+	private CFUtils() {
+	}
 	
-	public void createConfigureFile(String path, MainFrame context) {
+	public static void createConfigureFile(String path, MainFrame context) {
 		StringBuilder configureFileName = new StringBuilder();
 		configureFileName.append(System.getProperty("user.dir")).append(System.getProperty("file.separator")).append("config.txt");
 		try (FileWriter fw = new FileWriter(configureFileName.toString())) {
@@ -23,7 +24,7 @@ public enum CFReader {
 		}
 	}
 	
-	public String readConfigureFile(MainFrame context) {
+	public static String readConfigureFile(MainFrame context) {
 		String result = "";
 		StringBuilder configureFileName = new StringBuilder();
 		configureFileName.append(System.getProperty("user.dir")).append(System.getProperty("file.separator")).append("config.txt");

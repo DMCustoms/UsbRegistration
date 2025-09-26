@@ -7,9 +7,10 @@ import javax.swing.border.EmptyBorder;
 
 import com.usbregistration.app.dbutils.DBConnector;
 import com.usbregistration.app.dbutils.DBStates;
+import com.usbregistration.app.listeners.CheckButtonListener;
 import com.usbregistration.app.listeners.FindUSBButtonListener;
 import com.usbregistration.app.usb.USBItem;
-import com.usbregistration.app.utils.CFReader;
+import com.usbregistration.app.utils.CFUtils;
 
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -18,9 +19,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JButton;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -90,6 +92,15 @@ public class MainFrame extends JFrame {
 		
 		findedDevices = new JList<USBItem>();
 		findedDevices.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		findedDevices.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent me) {
+				if (!findedDevices.isSelectionEmpty()) {
+					registerDevice.setEnabled(true);
+					checkDevice.setEnabled(true);
+				}
+			}
+		});
 
 		jScrollPane = new JScrollPane(findedDevices);
 		jScrollPane.setBounds(27, 12, 454, 131);
@@ -110,12 +121,13 @@ public class MainFrame extends JFrame {
 		registerDevice = new JButton("Регистрировать");
 		registerDevice.setBounds(493, 64, 147, 27);
 		registerDevice.setEnabled(false);
-		registerDevice.addActionListener((ae) -> new RegistrationFrame(this, findedDevices.getSelectedValue()));
+		registerDevice.addActionListener((ae) -> new RegistrationDialog(this, findedDevices.getSelectedValue()));
 		contentPane.add(registerDevice);
 		
 		checkDevice = new JButton("Проверить");
 		checkDevice.setBounds(493, 103, 147, 27);
 		checkDevice.setEnabled(false);
+		checkDevice.addActionListener(new CheckButtonListener(this, findedDevices));
 		contentPane.add(checkDevice);
 		
 		dbState = new JLabel(DBStates.DATABASE_IS_DISCONNECTED.state);
@@ -124,9 +136,9 @@ public class MainFrame extends JFrame {
 	}
 	
 	private void preconnectDB() {
-		String path = CFReader.INSTANCE.readConfigureFile(this);
+		String path = CFUtils.readConfigureFile(this);
 		if (!path.equals("")) {
-			if (DBConnector.INSTANCE.connectDB(path, this)) {
+			if (DBConnector.connectDB(path, this)) {
 				setDBState(DBStates.DATABASE_IS_CONNECTED);
 			}
 		}
@@ -134,8 +146,8 @@ public class MainFrame extends JFrame {
 	
 	public void setUSBList(USBItem[] deviceList) {
 		findedDevices.setListData(deviceList);
-		registerDevice.setEnabled(true);
-		checkDevice.setEnabled(true);
+		registerDevice.setEnabled(false);
+		checkDevice.setEnabled(false);
 	}
 	
 	public void setDBState(DBStates state) {

@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import com.usbregistration.app.graphics.MainFrame;
-import com.usbregistration.app.usb.USBItem;
 import com.usbregistration.app.usb.USBItemsList;
 
 import net.codecrete.usb.Usb;
@@ -28,14 +27,10 @@ public class FindUSBButtonListener implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		try {
-			@NotNull @Unmodifiable Collection<UsbDevice> devices = Usb.getDevices();
-			USBItemsList.INSTANCE.setUSBDataList(devices);
-			if(filtration.isSelected()) context.setUSBList(USBItemsList.INSTANCE.getUSBDataList(true));
-			else context.setUSBList(USBItemsList.INSTANCE.getUSBDataList(false));
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}	
+		@NotNull @Unmodifiable Collection<UsbDevice> devices = Usb.getDevices();
+		USBItemsList.INSTANCE.setUSBDataList(devices);
+		if(filtration.isSelected()) context.setUSBList(USBItemsList.INSTANCE.getUSBDataList(true));
+		else context.setUSBList(USBItemsList.INSTANCE.getUSBDataList(false));	
 	}
 
 }

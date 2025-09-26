@@ -6,14 +6,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.usbregistration.app.listeners.ConfirmRegistrationButtonListener;
 import com.usbregistration.app.usb.USBItem;
+import com.usbregistration.app.utils.RegisteredItem;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
-public class RegistrationFrame extends JDialog {
+public class RegistrationDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
+	private JFrame owner;
 	private JPanel contentPane;
 	private JTextField serialNumberField;
 	private JTextField productNameField;
@@ -33,12 +36,13 @@ public class RegistrationFrame extends JDialog {
 	private JLabel ownerLastNameLabel;
 	private JLabel departamentLabel;
 	private JLabel protectedLabel;
-	private JButton buttonOK;
+	private JButton confirmRegistration;
 	private USBItem usbItem;
 
-	public RegistrationFrame(JFrame owner, USBItem usbItem) {
+	public RegistrationDialog(JFrame owner, USBItem usbItem) {
 		super(owner, "Регистрация", ModalityType.APPLICATION_MODAL);
 		this.usbItem = usbItem;
+		this.owner = owner;
 		setBounds(100, 100, 377, 216);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(owner);
@@ -135,10 +139,10 @@ public class RegistrationFrame extends JDialog {
 		protectedLabel.setBounds(26, 136, 114, 17);
 		contentPane.add(protectedLabel);
 		
-		buttonOK = new JButton("ОК");
-		buttonOK.setBounds(252, 133, 86, 27);
-		buttonOK.addActionListener((ae) -> this.dispose());
-		contentPane.add(buttonOK);
+		confirmRegistration = new JButton("ОК");
+		confirmRegistration.setBounds(252, 133, 86, 27);
+		confirmRegistration.addActionListener(new ConfirmRegistrationButtonListener(this, owner));
+		contentPane.add(confirmRegistration);
 	}
 	
 	private void presetFieldsValues() {
@@ -148,6 +152,10 @@ public class RegistrationFrame extends JDialog {
 			VIDField.setText(usbItem.vendorID());
 			PIDField.setText(usbItem.productID());
 		}
+	}
+	
+	public RegisteredItem getRegisteredItemInstance() {
+		return new RegisteredItem(serialNumberField.getText(), productNameField.getText(), VIDField.getText(), PIDField.getText(), ownerSurnameField.getText(), ownerNameField.getText(), ownerLastNameField.getText(), departamentField.getText(), protectedField.getText());
 	}
 }
 

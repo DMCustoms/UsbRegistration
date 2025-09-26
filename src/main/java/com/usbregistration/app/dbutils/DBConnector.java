@@ -8,15 +8,14 @@ import com.usbregistration.app.graphics.MainFrame;
 import com.usbregistration.app.graphics.ModalDialog;
 import com.usbregistration.app.utils.DialogTypes;
 
-public enum DBConnector {
+public class DBConnector {
 	
-	INSTANCE;
+	private DBConnector() {
+	}
 	
-	private String[] values = new String[] { "", "Serial_number", "Product_name", "vid", "pid", "Owner_surname", "Owner_name", "Owner_lastname", "Owner_departament", "Protected_label" };
-	
-	public boolean createDB(String path, MainFrame context) {
-		String creatingQuery = "CREATE TABLE Registration (Serial_number TEXT, Product_name TEXT,"
-				+ " vid TEXT, pid TEXT, Owner_surname TEXT, Owner_name TEXT, Owner_lastname TEXT, Owner_departament TEXT, Protected_label INT);";
+	public static boolean createDB(String path, MainFrame context) {
+		String creatingQuery = "CREATE TABLE Registration (id INTEGER PRIMARY KEY AUTOINCREMENT, Serial_number TEXT UNIQUE, Product_name TEXT,"
+				+ " vid TEXT, pid TEXT, Owner_surname TEXT, Owner_name TEXT, Owner_lastname TEXT, Owner_departament TEXT, Protected_label TEXT);";
 		try {
 			DBConnection.INSTANCE.openConnection(path);
 			DBConnection.INSTANCE.getStatement().executeUpdate(creatingQuery);
@@ -27,7 +26,8 @@ public enum DBConnector {
 		}
 	}
 	
-	public boolean connectDB(String path, MainFrame context) {
+	public static boolean connectDB(String path, MainFrame context) {
+		String[] values = new String[] { "", "id", "Serial_number", "Product_name", "vid", "pid", "Owner_surname", "Owner_name", "Owner_lastname", "Owner_departament", "Protected_label" };
 		String testQuery = "SELECT * FROM Registration;";
 		try {
 			DBConnection.INSTANCE.openConnection(path);
