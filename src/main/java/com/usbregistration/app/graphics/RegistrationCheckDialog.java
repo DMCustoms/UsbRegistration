@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import com.usbregistration.app.utils.RegisteredItem;
+import com.usbregistration.app.items.RegisteredItem;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;

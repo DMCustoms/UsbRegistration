@@ -1,6 +1,6 @@
 module UsbRegistration {
 	exports com.usbregistration.app;
-	exports com.usbregistration.app.usb;
+	exports com.usbregistration.app.items;
 	exports com.usbregistration.app.graphics;
 	exports com.usbregistration.app.dbutils;
 	exports com.usbregistration.app.utils;

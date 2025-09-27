@@ -2,14 +2,14 @@ package com.usbregistration.app.graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.border.EmptyBorder;
 
-import com.usbregistration.app.dbutils.DBConnector;
+import com.usbregistration.app.dbutils.DBUtils;
+import com.usbregistration.app.items.USBItem;
 import com.usbregistration.app.dbutils.DBStates;
 import com.usbregistration.app.listeners.CheckButtonListener;
 import com.usbregistration.app.listeners.FindUSBButtonListener;
-import com.usbregistration.app.usb.USBItem;
 import com.usbregistration.app.utils.CFUtils;
 
 import javax.swing.JScrollPane;
@@ -32,12 +32,14 @@ import javax.swing.ListSelectionModel;
 public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private JRootPane contentPane;
 	private JMenuBar jMenuBar;
 	private JMenu jmFile;
+	private JMenu jmSearch;
 	private JMenuItem connectDBFile;
 	private JMenuItem createDBFile;
 	private JMenuItem exit;
+	private JMenuItem openDB;
 	private JScrollPane jScrollPane;
 	private JList<USBItem> findedDevices;
 	private JButton findDevices;
@@ -64,6 +66,7 @@ public class MainFrame extends JFrame {
 		jMenuBar = new JMenuBar();
 		jmFile = new JMenu("Файл");
 		jmFile.setMnemonic(KeyEvent.VK_F);
+		jmSearch = new JMenu("Поиск");
 		
 		connectDBFile = new JMenuItem("Подключить файл БД", KeyEvent.VK_O);
 		connectDBFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
@@ -77,16 +80,24 @@ public class MainFrame extends JFrame {
 		exit.addActionListener((ae) -> System.exit(0));
 		exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));	
 		
+		openDB = new JMenuItem("Открыть БД", KeyEvent.VK_B);
+		openDB.addActionListener((ae) -> new SearchDialog(this));
+		openDB.setEnabled(false);
+		openDB.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK));
+		
 		jmFile.add(connectDBFile);
 		jmFile.add(createDBFile);
 		jmFile.addSeparator();
 		jmFile.add(exit);
 		
+		jmSearch.add(openDB);
+		
 		jMenuBar.add(jmFile);
+		jMenuBar.add(jmSearch);
 	}
 	
 	private void initContentPane() {
-		contentPane = new JPanel();
+		contentPane = new JRootPane();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		
@@ -138,7 +149,7 @@ public class MainFrame extends JFrame {
 	private void preconnectDB() {
 		String path = CFUtils.readConfigureFile(this);
 		if (!path.equals("")) {
-			if (DBConnector.connectDB(path, this)) {
+			if (DBUtils.connectDB(path, this)) {
 				setDBState(DBStates.DATABASE_IS_CONNECTED);
 			}
 		}
@@ -155,12 +166,14 @@ public class MainFrame extends JFrame {
 			dbState.setText(DBStates.DATABASE_IS_CONNECTED.state); 
 			createDBFile.setEnabled(false);
 			connectDBFile.setEnabled(false);
+			openDB.setEnabled(true);
 			findDevices.setEnabled(true);
 		}
 		else if (state == DBStates.DATABASE_IS_DISCONNECTED) {
 			dbState.setText(DBStates.DATABASE_IS_DISCONNECTED.state);
 			createDBFile.setEnabled(true);
 			connectDBFile.setEnabled(true);
+			openDB.setEnabled(false);
 			findDevices.setEnabled(false);
 		}
 	}

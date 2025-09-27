@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import com.usbregistration.app.graphics.MainFrame;
-import com.usbregistration.app.usb.USBItemsList;
+import com.usbregistration.app.items.USBItemsList;
 
 import net.codecrete.usb.Usb;
 import net.codecrete.usb.UsbDevice;

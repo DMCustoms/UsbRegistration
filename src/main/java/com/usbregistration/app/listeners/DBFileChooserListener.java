@@ -7,12 +7,12 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-import com.usbregistration.app.dbutils.DBConnector;
+import com.usbregistration.app.dbutils.DBUtils;
 import com.usbregistration.app.dbutils.DBStates;
+import com.usbregistration.app.graphics.DialogTypes;
 import com.usbregistration.app.graphics.MainFrame;
 import com.usbregistration.app.graphics.ModalDialog;
 import com.usbregistration.app.utils.CFUtils;
-import com.usbregistration.app.utils.DialogTypes;
 
 public class DBFileChooserListener implements ActionListener {
 	
@@ -31,7 +31,7 @@ public class DBFileChooserListener implements ActionListener {
 			File database = new File(path);
 			try {
 				if(database.createNewFile()) {
-					if (DBConnector.createDB(path, mainFrameContext)) {
+					if (DBUtils.createDB(path, mainFrameContext)) {
 						CFUtils.createConfigureFile(path, mainFrameContext);
 						mainFrameContext.setDBState(DBStates.DATABASE_IS_CONNECTED);
 						new ModalDialog(mainFrameContext, DialogTypes.DATABASE_CREATE);
@@ -42,7 +42,7 @@ public class DBFileChooserListener implements ActionListener {
 			}
 		} else if (context.getDialogType() == JFileChooser.OPEN_DIALOG && e.getActionCommand().equals("ApproveSelection")) {
 			String path = context.getSelectedFile().getAbsolutePath();
-			if (DBConnector.connectDB(path, mainFrameContext)) {
+			if (DBUtils.connectDB(path, mainFrameContext)) {
 				CFUtils.createConfigureFile(path, mainFrameContext);
 				mainFrameContext.setDBState(DBStates.DATABASE_IS_CONNECTED);
 				new ModalDialog(mainFrameContext, DialogTypes.DATABASE_CONNECTED);

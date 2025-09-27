@@ -3,18 +3,15 @@ package com.usbregistration.app.graphics;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-
-import com.usbregistration.app.utils.DialogTypes;
-
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 public class ModalDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private JRootPane contentPane;
 	private JLabel message;
 	private JButton buttonOK;
 
@@ -30,7 +27,7 @@ public class ModalDialog extends JDialog {
 	}
 	
 	private void initContentPane(DialogTypes type) {
-		contentPane = new JPanel();
+		contentPane = new JRootPane();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		

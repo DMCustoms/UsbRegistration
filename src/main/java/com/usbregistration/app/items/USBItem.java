@@ -1,4 +1,4 @@
-package com.usbregistration.app.usb;
+package com.usbregistration.app.items;
 
 public record USBItem(String serialNumber, String productName, String vendorID, String productID) {
 

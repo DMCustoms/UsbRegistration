@@ -1,14 +1,17 @@
 package com.usbregistration.app.graphics;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.border.EmptyBorder;
 
+import com.usbregistration.app.items.RegisteredItem;
+import com.usbregistration.app.items.USBItem;
 import com.usbregistration.app.listeners.ConfirmRegistrationButtonListener;
-import com.usbregistration.app.usb.USBItem;
-import com.usbregistration.app.utils.RegisteredItem;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -17,7 +20,7 @@ public class RegistrationDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JFrame owner;
-	private JPanel contentPane;
+	private JRootPane contentPane;
 	private JTextField serialNumberField;
 	private JTextField productNameField;
 	private JTextField VIDField;
@@ -54,7 +57,7 @@ public class RegistrationDialog extends JDialog {
 	}
 	
 	private void initContentPane() {
-		contentPane = new JPanel();
+		contentPane = new JRootPane();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		
@@ -154,8 +157,15 @@ public class RegistrationDialog extends JDialog {
 		}
 	}
 	
-	public RegisteredItem getRegisteredItemInstance() {
-		return new RegisteredItem(serialNumberField.getText(), productNameField.getText(), VIDField.getText(), PIDField.getText(), ownerSurnameField.getText(), ownerNameField.getText(), ownerLastNameField.getText(), departamentField.getText(), protectedField.getText());
+	public RegisteredItem getRegisteredItem() {
+		JTextField[] checkOnIsEmptyArray = new JTextField[] { serialNumberField, productNameField, VIDField, PIDField, ownerSurnameField, ownerNameField, ownerLastNameField, departamentField, protectedField };
+		for (JTextField item : checkOnIsEmptyArray) {
+			if (item.getText().trim().isBlank()) return null;
+		}
+		LocalDateTime ldm = LocalDateTime.now();
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+		String date = ldm.format(format);
+		return new RegisteredItem(serialNumberField.getText().trim(), productNameField.getText().trim(), VIDField.getText().trim(), PIDField.getText().trim(), ownerSurnameField.getText().trim(), ownerNameField.getText().trim(), ownerLastNameField.getText().trim(), departamentField.getText().trim(), protectedField.getText().trim(), date);
 	}
 }
 

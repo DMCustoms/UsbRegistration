@@ -1,4 +1,4 @@
-package com.usbregistration.app.utils;
+package com.usbregistration.app.graphics;
 
 public enum DialogTypes {
 	
@@ -10,7 +10,8 @@ public enum DialogTypes {
 	INSERT_COMPLETE("Запись произведена"),
 	INSERT_FAIL("Запись не удалась"),
 	NOT_UNIQUE_VALUE("Данный S/N уже записан в БД"),
-	DEVICE_NOT_REGISTERED("Устройство не зарегистрировано");
+	DEVICE_NOT_REGISTERED("Устройство не зарегистрировано"),
+	BLANK_FIELDS("Заполните все поля");
 	
 	public String value;
 	

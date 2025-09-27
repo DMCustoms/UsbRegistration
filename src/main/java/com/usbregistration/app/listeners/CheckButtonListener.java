@@ -9,11 +9,11 @@ import javax.swing.JList;
 
 import com.usbregistration.app.dbutils.DBConnection;
 import com.usbregistration.app.dbutils.Queries;
+import com.usbregistration.app.graphics.DialogTypes;
 import com.usbregistration.app.graphics.ModalDialog;
 import com.usbregistration.app.graphics.RegistrationCheckDialog;
-import com.usbregistration.app.usb.USBItem;
-import com.usbregistration.app.utils.DialogTypes;
-import com.usbregistration.app.utils.RegisteredItem;
+import com.usbregistration.app.items.RegisteredItem;
+import com.usbregistration.app.items.USBItem;
 
 public class CheckButtonListener implements ActionListener {
 
