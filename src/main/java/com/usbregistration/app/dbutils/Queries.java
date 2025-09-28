@@ -50,16 +50,40 @@ public class Queries {
 		return new RegisteredItem(rs.getString("Serial_number"), rs.getString("Product_name"), rs.getString("vid"), rs.getString("pid"), rs.getString("Owner_surname"), rs.getString("Owner_name"), rs.getString("Owner_lastname"), rs.getString("Owner_departament"), rs.getString("Protected_label"), rs.getString("Date"));
 	}
 	
-	public static RegisteredItem[] selectAllQuery(Statement statement) throws SQLException {
-		String query = "SELECT * FROM Registration";
+	public static RegisteredItem[] selectAllQuery(Statement statement, String serialNumber, String surName, String name, String lastName, String departament, String protectedLabel, String date) throws SQLException {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT * FROM Registration WHERE Serial_number LIKE '")
+			.append(serialNumber)
+			.append("%' AND Owner_surname LIKE '")
+			.append(surName)
+			.append("%' AND Owner_name LIKE '")
+			.append(name)
+			.append("%' AND Owner_lastname LIKE '")
+			.append(lastName)
+			.append("%' AND Owner_departament LIKE '")
+			.append(departament)
+			.append("%' AND Protected_label LIKE '")
+			.append(protectedLabel)
+			.append("%' AND Date LIKE '")
+			.append(date)
+			.append("%';");
 		ArrayList<RegisteredItem> list = new ArrayList<RegisteredItem>();
-		ResultSet rs = statement.executeQuery(query);
+		ResultSet rs = statement.executeQuery(query.toString());
 		while (rs.next()) {
 			list.add(new RegisteredItem(rs.getString("Serial_number"), rs.getString("Product_name"), rs.getString("vid"), rs.getString("pid"), rs.getString("Owner_surname"), rs.getString("Owner_name"), rs.getString("Owner_lastname"), rs.getString("Owner_departament"), rs.getString("Protected_label"), rs.getString("Date")));        
 		}
 		RegisteredItemsList.INSTANCE.setRegisteredItemsList(list);
 		return RegisteredItemsList.INSTANCE.getRegisteredItemsDataList();
 	}
+	
+	public static void removeQuery(Statement statement, RegisteredItem removalItem) throws SQLException {
+		StringBuilder query = new StringBuilder();
+		query.append("DELETE FROM Registration WHERE Serial_number = '")
+			.append(removalItem.serialNumber())
+			.append("';");
+		statement.executeUpdate(query.toString());
+	}
+	
 }
 
 

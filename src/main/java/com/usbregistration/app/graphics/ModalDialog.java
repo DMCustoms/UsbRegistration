@@ -41,5 +41,7 @@ public class ModalDialog extends JDialog {
 		buttonOK.setBounds(95, 73, 110, 27);
 		buttonOK.addActionListener((ae) -> this.dispose());
 		contentPane.add(buttonOK);
+		
+		contentPane.setDefaultButton(buttonOK);
 	}
 }

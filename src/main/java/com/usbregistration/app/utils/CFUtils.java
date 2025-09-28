@@ -19,6 +19,7 @@ public class CFUtils {
 		StringBuilder configureFileName = new StringBuilder();
 		configureFileName.append(System.getProperty("user.dir")).append(System.getProperty("file.separator")).append("config.txt");
 		try (FileWriter fw = new FileWriter(configureFileName.toString())) {
+			fw.write("# This file created by USBRegistration program and needed to search a database file\n");
 			fw.write(path);
 		} catch (IOException ex) {
 			new ModalDialog(context, DialogTypes.CF_CREATION_ERROR);
@@ -34,6 +35,7 @@ public class CFUtils {
 		try (BufferedReader br = new BufferedReader(new FileReader(configFile))) {
 			while (br.ready()) {
 				result = br.readLine();
+				if (result.startsWith("#")) continue;
 			}
 			File dbFile = new File(result);
 			if (!dbFile.exists()) return "";

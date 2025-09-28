@@ -3,7 +3,7 @@ package com.usbregistration.app.graphics;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.border.EmptyBorder;
 
 import com.usbregistration.app.items.RegisteredItem;
@@ -14,7 +14,7 @@ import javax.swing.SwingConstants;
 public class RegistrationCheckDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private JRootPane contentPane;
 	private JLabel deviceIsRegistred;
 	private JLabel serialNumber;
 	private JLabel ownerSurname;
@@ -36,7 +36,7 @@ public class RegistrationCheckDialog extends JDialog {
 	}
 	
 	private void initContentPane() {
-		contentPane = new JPanel();
+		contentPane = new JRootPane();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		
@@ -73,5 +73,7 @@ public class RegistrationCheckDialog extends JDialog {
 		buttonOK.addActionListener((ae) -> this.dispose());
 		buttonOK.setBounds(79, 160, 105, 27);
 		contentPane.add(buttonOK);
+		
+		contentPane.setDefaultButton(buttonOK);
 	}
 }

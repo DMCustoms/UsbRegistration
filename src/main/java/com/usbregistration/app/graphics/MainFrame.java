@@ -25,6 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -35,6 +36,8 @@ public class MainFrame extends JFrame {
 	private JRootPane contentPane;
 	private JMenuBar jMenuBar;
 	private JMenu jmFile;
+	private JMenu jmEdit;
+	private JCheckBoxMenuItem permitEditing;
 	private JMenu jmSearch;
 	private JMenuItem connectDBFile;
 	private JMenuItem createDBFile;
@@ -65,7 +68,7 @@ public class MainFrame extends JFrame {
 	private void initMenu() {
 		jMenuBar = new JMenuBar();
 		jmFile = new JMenu("Файл");
-		jmFile.setMnemonic(KeyEvent.VK_F);
+		jmEdit = new JMenu("Правка");
 		jmSearch = new JMenu("Поиск");
 		
 		connectDBFile = new JMenuItem("Подключить файл БД", KeyEvent.VK_O);
@@ -80,6 +83,9 @@ public class MainFrame extends JFrame {
 		exit.addActionListener((ae) -> System.exit(0));
 		exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));	
 		
+		permitEditing = new JCheckBoxMenuItem("Запретить редактирование полей");
+		permitEditing.setSelected(true);
+		
 		openDB = new JMenuItem("Открыть БД", KeyEvent.VK_B);
 		openDB.addActionListener((ae) -> new SearchDialog(this));
 		openDB.setEnabled(false);
@@ -92,7 +98,10 @@ public class MainFrame extends JFrame {
 		
 		jmSearch.add(openDB);
 		
+		jmEdit.add(permitEditing);
+		
 		jMenuBar.add(jmFile);
+		jMenuBar.add(jmEdit);
 		jMenuBar.add(jmSearch);
 	}
 	
@@ -177,7 +186,10 @@ public class MainFrame extends JFrame {
 			findDevices.setEnabled(false);
 		}
 	}
-
+	
+	public boolean isPermittedEditing() {
+		return permitEditing.isSelected();
+	}
 }
 
 

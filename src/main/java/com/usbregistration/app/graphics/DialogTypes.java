@@ -11,7 +11,9 @@ public enum DialogTypes {
 	INSERT_FAIL("Запись не удалась"),
 	NOT_UNIQUE_VALUE("Данный S/N уже записан в БД"),
 	DEVICE_NOT_REGISTERED("Устройство не зарегистрировано"),
-	BLANK_FIELDS("Заполните все поля");
+	BLANK_FIELDS("Заполните все поля"),
+	REMOVE_COMPLETE("Удалено успешно"),
+	REMOVE_FAIL("Ошибка удаления записи");
 	
 	public String value;
 	

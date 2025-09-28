@@ -5,9 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JRootPane;
-import javax.swing.border.EmptyBorder;
 
 import com.usbregistration.app.items.RegisteredItem;
 import com.usbregistration.app.items.USBItem;
@@ -19,7 +17,7 @@ import javax.swing.JLabel;
 public class RegistrationDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JFrame owner;
+	private MainFrame context;
 	private JRootPane contentPane;
 	private JTextField serialNumberField;
 	private JTextField productNameField;
@@ -42,23 +40,23 @@ public class RegistrationDialog extends JDialog {
 	private JButton confirmRegistration;
 	private USBItem usbItem;
 
-	public RegistrationDialog(JFrame owner, USBItem usbItem) {
-		super(owner, "Регистрация", ModalityType.APPLICATION_MODAL);
+	public RegistrationDialog(MainFrame context, USBItem usbItem) {
+		super(context, "Регистрация", ModalityType.APPLICATION_MODAL);
 		this.usbItem = usbItem;
-		this.owner = owner;
+		this.context = context;
 		setBounds(100, 100, 377, 216);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(owner);
+		setLocationRelativeTo(context);
 		setResizable(false);
 		initContentPane();
 		presetFieldsValues();
+		checkEditingPermission();
 		setContentPane(contentPane);
 		setVisible(true);
 	}
 	
 	private void initContentPane() {
 		contentPane = new JRootPane();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		
 		serialNumberField = new JTextField();
@@ -144,8 +142,10 @@ public class RegistrationDialog extends JDialog {
 		
 		confirmRegistration = new JButton("ОК");
 		confirmRegistration.setBounds(252, 133, 86, 27);
-		confirmRegistration.addActionListener(new ConfirmRegistrationButtonListener(this, owner));
+		confirmRegistration.addActionListener(new ConfirmRegistrationButtonListener(this, context));
 		contentPane.add(confirmRegistration);
+		
+		contentPane.setDefaultButton(confirmRegistration);
 	}
 	
 	private void presetFieldsValues() {
@@ -154,6 +154,15 @@ public class RegistrationDialog extends JDialog {
 			productNameField.setText(usbItem.productName());
 			VIDField.setText(usbItem.vendorID());
 			PIDField.setText(usbItem.productID());
+		}
+	}
+	
+	public void checkEditingPermission() {
+		if (context.isPermittedEditing()) {
+			serialNumberField.setEditable(false);
+			VIDField.setEditable(false);
+			PIDField.setEditable(false);
+			productNameField.setEditable(false);
 		}
 	}
 	
