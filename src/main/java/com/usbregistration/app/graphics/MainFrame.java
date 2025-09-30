@@ -6,10 +6,12 @@ import javax.swing.JRootPane;
 import javax.swing.border.EmptyBorder;
 
 import com.usbregistration.app.dbutils.DBUtils;
+import com.usbregistration.app.handlers.CheckButtonHandler;
+import com.usbregistration.app.handlers.FindDevicesButtonHandler;
+import com.usbregistration.app.interfaces.ButtonHandler;
 import com.usbregistration.app.items.USBItem;
-import com.usbregistration.app.dbutils.DBStates;
-import com.usbregistration.app.listeners.CheckButtonListener;
-import com.usbregistration.app.listeners.FindUSBButtonListener;
+import com.usbregistration.app.types.DBStates;
+import com.usbregistration.app.types.DialogMessages;
 import com.usbregistration.app.utils.CFUtils;
 
 import javax.swing.JScrollPane;
@@ -50,6 +52,7 @@ public class MainFrame extends JFrame {
 	private JButton checkDevice;
 	private JCheckBox filtrationByName;
 	private JLabel dbState;
+	private ButtonHandler handler;
 
 	public MainFrame() {
 		setResizable(false);
@@ -73,11 +76,11 @@ public class MainFrame extends JFrame {
 		
 		connectDBFile = new JMenuItem("Подключить файл БД", KeyEvent.VK_O);
 		connectDBFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-		connectDBFile.addActionListener((ae) -> new DBFileChooser(this, JFileChooser.OPEN_DIALOG));
+		connectDBFile.addActionListener((ae) -> new DBFileChooser(this, JFileChooser.OPEN_DIALOG, DialogMessages.OPEN_CHOOSER_TITLE));
 		
 		createDBFile = new JMenuItem("Создать файл БД", KeyEvent.VK_C);
 		createDBFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
-		createDBFile.addActionListener((ae) -> new DBFileChooser(this, JFileChooser.SAVE_DIALOG));
+		createDBFile.addActionListener((ae) -> new DBFileChooser(this, JFileChooser.SAVE_DIALOG, DialogMessages.SAVE_CHOOSER_TITLE));
 		
 		exit = new JMenuItem("Выйти", KeyEvent.VK_E);
 		exit.addActionListener((ae) -> System.exit(0));
@@ -134,8 +137,10 @@ public class MainFrame extends JFrame {
 		findDevices = new JButton("Обнаружить");
 		findDevices.setEnabled(false);
 		findDevices.setBounds(493, 25, 147, 27);
-		findDevices.setActionCommand("find_devices");
-		findDevices.addActionListener(new FindUSBButtonListener(this, filtrationByName));
+		findDevices.addActionListener((ae) -> {
+			handler = new FindDevicesButtonHandler(this, filtrationByName);
+			handler.handle();
+		});
 		contentPane.add(findDevices);
 		
 		registerDevice = new JButton("Регистрировать");
@@ -147,7 +152,10 @@ public class MainFrame extends JFrame {
 		checkDevice = new JButton("Проверить");
 		checkDevice.setBounds(493, 103, 147, 27);
 		checkDevice.setEnabled(false);
-		checkDevice.addActionListener(new CheckButtonListener(this, findedDevices));
+		checkDevice.addActionListener((ae) -> {
+			handler = new CheckButtonHandler(this, findedDevices);
+			handler.handle();
+		});
 		contentPane.add(checkDevice);
 		
 		dbState = new JLabel(DBStates.DATABASE_IS_DISCONNECTED.state);
@@ -157,10 +165,8 @@ public class MainFrame extends JFrame {
 	
 	private void preconnectDB() {
 		String path = CFUtils.readConfigureFile(this);
-		if (!path.equals("")) {
-			if (DBUtils.connectDB(path, this)) {
-				setDBState(DBStates.DATABASE_IS_CONNECTED);
-			}
+		if (path != null) {
+			DBUtils.connectDB(path, this);
 		}
 	}
 	
@@ -168,6 +174,8 @@ public class MainFrame extends JFrame {
 		findedDevices.setListData(deviceList);
 		registerDevice.setEnabled(false);
 		checkDevice.setEnabled(false);
+		findDevices.repaint();
+		this.repaint();
 	}
 	
 	public void setDBState(DBStates state) {

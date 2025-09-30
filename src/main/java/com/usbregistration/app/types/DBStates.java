@@ -1,4 +1,4 @@
-package com.usbregistration.app.dbutils;
+package com.usbregistration.app.types;
 
 public enum DBStates {
 	

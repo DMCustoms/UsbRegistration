@@ -10,6 +10,8 @@ import javax.swing.JRootPane;
 import com.usbregistration.app.dbutils.DBConnection;
 import com.usbregistration.app.dbutils.Queries;
 import com.usbregistration.app.items.RegisteredItem;
+import com.usbregistration.app.types.ConfirmTypes;
+import com.usbregistration.app.types.DialogMessages;
 
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -27,7 +29,6 @@ import java.sql.SQLException;
 public class SearchDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JFrame context;
 	private JRootPane contentPane;
 	private JTextField searchBySN;
 	private JTextField searchBySurname;
@@ -46,10 +47,10 @@ public class SearchDialog extends JDialog {
 	private JScrollPane jScrollPane;
 	private JList<RegisteredItem> registeredDevices;
 	private JButton remove;
+	private JButton update;
 
 	public SearchDialog(JFrame context) {
 		super(context, "Поиск по БД", ModalityType.APPLICATION_MODAL);
-		this.context = context;
 		setSize(new Dimension(700, 411));
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -71,6 +72,7 @@ public class SearchDialog extends JDialog {
 			public void mousePressed(MouseEvent me) {
 				if (!registeredDevices.isSelectionEmpty()) {
 					remove.setEnabled(true);
+					update.setEnabled(true);
 				}
 			}
 		});
@@ -156,15 +158,24 @@ public class SearchDialog extends JDialog {
 		remove = new JButton("Удалить запись");
 		remove.setEnabled(false);
 		remove.setBounds(506, 324, 146, 27);
-		remove.addActionListener((ae) -> new ConfirmRemovalDialog(context, this, registeredDevices.getSelectedValue()));
+		remove.addActionListener((ae) -> new ConfirmDialog(this, registeredDevices.getSelectedValue(), DialogMessages.CONFIRM_REMOVAL, ConfirmTypes.CONFIRM_REMOVAL));
 		contentPane.add(remove);
+		
+		update = new JButton("Изменить запись");
+		update.setEnabled(false);
+		update.setBounds(340, 324, 146, 27);
+		update.addActionListener((ae) -> new UpdateDialog(this, registeredDevices.getSelectedValue()));
+		contentPane.add(update);
 	}
 	
 	public void setRegisteredItemsList() {
 		try {
 			RegisteredItem[] items = Queries.selectAllQuery(DBConnection.INSTANCE.getStatement(), searchBySN.getText(), searchBySurname.getText(), searchByName.getText(), searchByLastname.getText(), searchByDepartament.getText(), searchByProtectedlabel.getText(), searchByDate.getText());                             
 			registeredDevices.setListData(items);
+			registeredDevices.repaint();
+			this.repaint();
 			remove.setEnabled(false);
+			update.setEnabled(false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

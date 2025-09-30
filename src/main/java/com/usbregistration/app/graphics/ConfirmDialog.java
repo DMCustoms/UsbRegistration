@@ -4,30 +4,38 @@ import java.awt.Dimension;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import com.usbregistration.app.handlers.ConfirmRemovalHandler;
+import com.usbregistration.app.handlers.ConfirmUpdateHandler;
+import com.usbregistration.app.interfaces.ConfirmHandler;
 import com.usbregistration.app.items.RegisteredItem;
-import com.usbregistration.app.listeners.ConfirmRemovingButtonListener;
+import com.usbregistration.app.types.ConfirmTypes;
+import com.usbregistration.app.types.DialogMessages;
 
-public class ConfirmRemovalDialog extends JDialog {
+public class ConfirmDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JFrame context;
-	private SearchDialog searchDialogContext;
+	private SearchDialog context;
 	private RegisteredItem item;
 	private JRootPane contentPane;
 	private JLabel confirmation;
 	private JButton confirm;
 	private JButton cancel;
+	private DialogMessages message;
+	private ConfirmTypes type;
+	private ConfirmHandler handler;
 
-	public ConfirmRemovalDialog(JFrame context, SearchDialog searchDialogContext, RegisteredItem item) {
+	public ConfirmDialog(JDialog context, RegisteredItem item, DialogMessages message, ConfirmTypes type) {
 		super(context, "Подтверждение", ModalityType.APPLICATION_MODAL);
-		this.context = context;
-		this.searchDialogContext = searchDialogContext;
+
+		this.context = (SearchDialog) context;
+		this.message = message;
 		this.item = item;
+		this.type = type;
+		
 		setSize(new Dimension(335, 177));
 		setResizable(false);
 		initContentPane();
@@ -41,14 +49,18 @@ public class ConfirmRemovalDialog extends JDialog {
 		contentPane = new JRootPane();
 		contentPane.setLayout(null);
 		
-		confirmation = new JLabel("Вы действительно хотите удалить запись?");
+		confirmation = new JLabel(message.value);
 		confirmation.setHorizontalAlignment(SwingConstants.CENTER);
 		confirmation.setBounds(23, 31, 300, 17);
 		contentPane.add(confirmation);
 		
 		confirm = new JButton("Да");
 		confirm.setBounds(48, 83, 105, 27);
-		confirm.addActionListener(new ConfirmRemovingButtonListener(context, this, searchDialogContext, item));
+		confirm.addActionListener((ae) -> {
+			if (type == ConfirmTypes.CONFIRM_REMOVAL) handler = new ConfirmRemovalHandler(context, this, item);
+			else if (type == ConfirmTypes.CONFIRM_UPDATE) handler = new ConfirmUpdateHandler(context, this, item);
+			handler.confirm();
+		});
 		contentPane.add(confirm);
 		
 		cancel = new JButton("Отмена");

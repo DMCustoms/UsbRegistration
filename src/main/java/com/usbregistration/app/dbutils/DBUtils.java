@@ -4,9 +4,11 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-import com.usbregistration.app.graphics.DialogTypes;
 import com.usbregistration.app.graphics.MainFrame;
 import com.usbregistration.app.graphics.ModalDialog;
+import com.usbregistration.app.types.DBStates;
+import com.usbregistration.app.types.DialogMessages;
+import com.usbregistration.app.utils.CFUtils;
 
 public class DBUtils {
 	
@@ -19,9 +21,11 @@ public class DBUtils {
 		try {
 			DBConnection.INSTANCE.openConnection(path);
 			DBConnection.INSTANCE.getStatement().executeUpdate(creatingQuery);
+			CFUtils.createConfigureFile(path, context);
+			context.setDBState(DBStates.DATABASE_IS_CONNECTED);
 			return true;
 		} catch (SQLException e) {
-			new ModalDialog(context, DialogTypes.CONNECTION_ERROR);
+			new ModalDialog(context, DialogMessages.CONNECTION_ERROR);
 			return false;
 		}
 	}
@@ -34,11 +38,17 @@ public class DBUtils {
 			ResultSet resultSet = DBConnection.INSTANCE.getStatement().executeQuery(testQuery);
 			ResultSetMetaData rsMetaData = resultSet.getMetaData();
 			for (int i = 1; i <= 9; i++) {
-				if (!rsMetaData.getColumnName(i).equals(values[i])) return false;
+				if (!rsMetaData.getColumnName(i).equals(values[i])) {
+					new ModalDialog(context, DialogMessages.DATABASE_INCORRECT);
+					context.setDBState(DBStates.DATABASE_IS_DISCONNECTED);
+					return false;
+				}
 			}
+			CFUtils.createConfigureFile(path, context);
+			context.setDBState(DBStates.DATABASE_IS_CONNECTED);
 			return true;
 		} catch (SQLException e) {
-			new ModalDialog(context, DialogTypes.CONNECTION_ERROR);
+			new ModalDialog(context, DialogMessages.CONNECTION_ERROR);
 			return false;
 		}
 	}

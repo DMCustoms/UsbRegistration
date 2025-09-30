@@ -1,5 +1,7 @@
 package com.usbregistration.app.graphics;
 
+import java.awt.Dialog;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -8,6 +10,8 @@ import javax.swing.JRootPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import com.usbregistration.app.types.DialogMessages;
+
 public class ModalDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
@@ -15,7 +19,7 @@ public class ModalDialog extends JDialog {
 	private JLabel message;
 	private JButton buttonOK;
 
-	public ModalDialog(JFrame owner, DialogTypes type) {
+	public ModalDialog(JFrame owner, DialogMessages type) {
 		super(owner, "", ModalityType.APPLICATION_MODAL);
 		setBounds(100, 100, 300, 178);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -26,7 +30,18 @@ public class ModalDialog extends JDialog {
 		setVisible(true);
 	}
 	
-	private void initContentPane(DialogTypes type) {
+	public ModalDialog(Dialog owner, DialogMessages type) {
+		super(owner, "", ModalityType.APPLICATION_MODAL);
+		setBounds(100, 100, 300, 178);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setResizable(false);
+		setLocationRelativeTo(owner);
+		initContentPane(type);
+		setContentPane(contentPane);
+		setVisible(true);
+	}
+	
+	private void initContentPane(DialogMessages type) {
 		contentPane = new JRootPane();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);

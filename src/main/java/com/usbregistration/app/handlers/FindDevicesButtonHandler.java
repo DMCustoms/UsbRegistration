@@ -1,32 +1,32 @@
-package com.usbregistration.app.listeners;
+package com.usbregistration.app.handlers;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Collection;
 
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import com.usbregistration.app.graphics.MainFrame;
+import com.usbregistration.app.interfaces.ButtonHandler;
 import com.usbregistration.app.items.USBItemsList;
 
 import net.codecrete.usb.Usb;
 import net.codecrete.usb.UsbDevice;
 
-public class FindUSBButtonListener implements ActionListener{
+public class FindDevicesButtonHandler implements ButtonHandler {
 	
 	private MainFrame context;
 	private JCheckBox filtration;
 	
-	public FindUSBButtonListener(MainFrame context, JCheckBox filtration) {
-		this.context = context;
+	public FindDevicesButtonHandler(JFrame context, JCheckBox filtration) {
+		this.context = (MainFrame) context;
 		this.filtration = filtration;
 	}
-	
+
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void handle() {
 		@NotNull @Unmodifiable Collection<UsbDevice> devices = Usb.getDevices();
 		USBItemsList.INSTANCE.setUSBDataList(devices);
 		if(filtration.isSelected()) context.setUSBList(USBItemsList.INSTANCE.getUSBDataList(true));

@@ -1,27 +1,20 @@
 package com.usbregistration.app.graphics;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JRootPane;
 
-import com.usbregistration.app.handlers.ConfirmRegistrationButtonHandler;
-import com.usbregistration.app.handlers.ReRegistrationHandler;
-import com.usbregistration.app.interfaces.ButtonHandler;
 import com.usbregistration.app.items.RegisteredItem;
-import com.usbregistration.app.items.USBItem;
+import com.usbregistration.app.types.ConfirmTypes;
+import com.usbregistration.app.types.DialogMessages;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
-public class RegistrationDialog extends JDialog {
+public class UpdateDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private MainFrame context;
+	private SearchDialog context;
 	private JRootPane contentPane;
 	private JTextField serialNumberField;
 	private JTextField productNameField;
@@ -32,6 +25,7 @@ public class RegistrationDialog extends JDialog {
 	private JTextField ownerLastNameField;
 	private JTextField departamentField;
 	private JTextField protectedField;
+	private JTextField dateField;
 	private JLabel serialNumberLabel;
 	private JLabel productNameLabel;
 	private JLabel VIDLabel;
@@ -41,22 +35,20 @@ public class RegistrationDialog extends JDialog {
 	private JLabel ownerLastNameLabel;
 	private JLabel departamentLabel;
 	private JLabel protectedLabel;
-	private JButton confirmRegistration;
-	private JCheckBox reRegistration;
-	private USBItem usbItem;
-	private ButtonHandler handler;
+	private JLabel dateLabel;
+	private JButton confirmUpdating;
+	private RegisteredItem item;
 
-	public RegistrationDialog(JFrame context, USBItem usbItem) {
-		super(context, "Регистрация", ModalityType.APPLICATION_MODAL);
-		this.usbItem = usbItem;
-		this.context = (MainFrame) context;
-		setBounds(100, 100, 377, 220);
+	public UpdateDialog(JDialog context, RegisteredItem item) {
+		super(context, "Изменение", ModalityType.APPLICATION_MODAL);
+		this.item = item;
+		this.context = (SearchDialog) context;
+		setBounds(100, 100, 377, 230);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(context);
 		setResizable(false);
 		initContentPane();
 		presetFieldsValues();
-		checkEditingPermission();
 		setContentPane(contentPane);
 		setVisible(true);
 	}
@@ -67,11 +59,13 @@ public class RegistrationDialog extends JDialog {
 		
 		serialNumberField = new JTextField();
 		serialNumberField.setBounds(115, 10, 234, 21);
+		serialNumberField.setEditable(false);
 		contentPane.add(serialNumberField);
 		serialNumberField.setColumns(10);
 		
 		productNameField = new JTextField();
 		productNameField.setBounds(125, 35, 124, 21);
+		productNameField.setEditable(false);
 		contentPane.add(productNameField);
 		productNameField.setColumns(10);
 		
@@ -82,11 +76,13 @@ public class RegistrationDialog extends JDialog {
 		
 		PIDField = new JTextField();
 		PIDField.setBounds(54, 60, 67, 21);
+		PIDField.setEditable(false);
 		contentPane.add(PIDField);
 		PIDField.setColumns(10);
 		
 		VIDField = new JTextField();
 		VIDField.setBounds(280, 35, 69, 21);
+		VIDField.setEditable(false);
 		contentPane.add(VIDField);
 		VIDField.setColumns(10);
 			
@@ -109,6 +105,11 @@ public class RegistrationDialog extends JDialog {
 		protectedField.setBounds(142, 135, 101, 21);
 		contentPane.add(protectedField);
 		protectedField.setColumns(10);
+		
+		dateField = new JTextField();
+		dateField.setBounds(62, 160, 140, 21);
+		dateField.setEditable(false);
+		contentPane.add(dateField);
 
 		serialNumberLabel = new JLabel("Серийный №");
 		serialNumberLabel.setBounds(26, 12, 124, 17);
@@ -146,50 +147,36 @@ public class RegistrationDialog extends JDialog {
 		protectedLabel.setBounds(26, 136, 114, 17);
 		contentPane.add(protectedLabel);
 		
-		reRegistration = new JCheckBox("Перерегистрация");
-		reRegistration.setBounds(26, 155, 150, 25);
-		contentPane.add(reRegistration);
+		dateLabel = new JLabel("Дата");
+		dateLabel.setBounds(26, 160, 50, 17);
+		contentPane.add(dateLabel);
 		
-		confirmRegistration = new JButton("ОК");
-		confirmRegistration.setBounds(252, 133, 86, 27);
-		confirmRegistration.addActionListener((ae) -> {
-			if (reRegistration.isSelected()) handler = new ReRegistrationHandler(this);
-			else handler = new ConfirmRegistrationButtonHandler(this);
-			handler.handle();
+		confirmUpdating = new JButton("ОК");
+		confirmUpdating.setBounds(252, 145, 86, 27);
+		confirmUpdating.addActionListener((ae) -> {
+			new ConfirmDialog(context, new RegisteredItem(serialNumberField.getText(), productNameField.getText(), VIDField.getText(), PIDField.getText(), ownerSurnameField.getText().trim(), ownerNameField.getText().trim(), ownerLastNameField.getText().trim(), departamentField.getText().trim(), protectedField.getText().trim(), dateField.getText()), DialogMessages.CONFIRM_UPDATE, ConfirmTypes.CONFIRM_UPDATE);
+			this.dispose();
 		});
-		contentPane.add(confirmRegistration);
+		contentPane.add(confirmUpdating);
 		
-		contentPane.setDefaultButton(confirmRegistration);
+		contentPane.setDefaultButton(confirmUpdating);
 	}
 	
 	private void presetFieldsValues() {
-		if (usbItem != null) {
-			serialNumberField.setText(usbItem.serialNumber());
-			productNameField.setText(usbItem.productName());
-			VIDField.setText(usbItem.vendorID());
-			PIDField.setText(usbItem.productID());
+		if (item != null) {
+			serialNumberField.setText(item.serialNumber());
+			productNameField.setText(item.productName());
+			VIDField.setText(item.vid());
+			PIDField.setText(item.pid());
+			ownerSurnameField.setText(item.ownerSurname());
+			ownerNameField.setText(item.ownerName());
+			ownerLastNameField.setText(item.ownerLastname());
+			departamentField.setText(item.ownerDepartament());
+			protectedField.setText(item.protectedLabel());
+			dateField.setText(item.date());
 		}
 	}
 	
-	public void checkEditingPermission() {
-		if (context.isPermittedEditing()) {
-			serialNumberField.setEditable(false);
-			VIDField.setEditable(false);
-			PIDField.setEditable(false);
-			productNameField.setEditable(false);
-		}
-	}
-	
-	public RegisteredItem getRegisteredItem() {
-		JTextField[] checkOnIsEmptyArray = new JTextField[] { serialNumberField, productNameField, VIDField, PIDField, ownerSurnameField, ownerNameField, ownerLastNameField, departamentField, protectedField };
-		for (JTextField item : checkOnIsEmptyArray) {
-			if (item.getText().trim().isBlank()) return null;
-		}
-		LocalDateTime ldm = LocalDateTime.now();
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-		String date = ldm.format(format);
-		return new RegisteredItem(serialNumberField.getText().trim(), productNameField.getText().trim(), VIDField.getText().trim(), PIDField.getText().trim(), ownerSurnameField.getText().trim(), ownerNameField.getText().trim(), ownerLastNameField.getText().trim(), departamentField.getText().trim(), protectedField.getText().trim(), date);
-	}
 }
 
 

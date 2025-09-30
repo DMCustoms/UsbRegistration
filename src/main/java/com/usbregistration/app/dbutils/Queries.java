@@ -13,7 +13,7 @@ public class Queries {
 	private Queries() {
 	}
 	
-	public static void insertQuery(Statement statement, RegisteredItem item) throws SQLException {
+	public static boolean insertQuery(Statement statement, RegisteredItem item) throws SQLException {
 		StringBuilder query = new StringBuilder();
 		query.append("INSERT INTO Registration (Serial_number, Product_name, vid, pid, Owner_surname, Owner_name, Owner_lastname, Owner_departament, Protected_label, Date) VALUES ")
 			.append("('")
@@ -37,16 +37,26 @@ public class Queries {
 			.append("', '")
 			.append(item.date())
 			.append("');");
-		statement.executeUpdate(query.toString());
+		if (statement.executeUpdate(query.toString()) == 1) return true;
+		return false;
 	}
 	
-	public static RegisteredItem checkQuery(Statement statement, String serialNumber) throws SQLException {
+	public static boolean checkQuery(Statement statement, String serialNumber) throws SQLException {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT * FROM Registration WHERE Serial_number = '")
 			.append(serialNumber)
 			.append("';");
 		ResultSet rs = statement.executeQuery(query.toString());
-		if (rs.getString("Serial_number") == null) throw new SQLException();
+		if (rs.getString("Serial_number") == null) return false;
+		return true;
+	}
+	
+	public static RegisteredItem selectBySNQuery(Statement statement, String serialNumber) throws SQLException {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT * FROM Registration WHERE Serial_number = '")
+			.append(serialNumber)
+			.append("';");
+		ResultSet rs = statement.executeQuery(query.toString());
 		return new RegisteredItem(rs.getString("Serial_number"), rs.getString("Product_name"), rs.getString("vid"), rs.getString("pid"), rs.getString("Owner_surname"), rs.getString("Owner_name"), rs.getString("Owner_lastname"), rs.getString("Owner_departament"), rs.getString("Protected_label"), rs.getString("Date"));
 	}
 	
@@ -76,12 +86,34 @@ public class Queries {
 		return RegisteredItemsList.INSTANCE.getRegisteredItemsDataList();
 	}
 	
-	public static void removeQuery(Statement statement, RegisteredItem removalItem) throws SQLException {
+	public static boolean removeQuery(Statement statement, RegisteredItem removalItem) throws SQLException {
 		StringBuilder query = new StringBuilder();
 		query.append("DELETE FROM Registration WHERE Serial_number = '")
 			.append(removalItem.serialNumber())
 			.append("';");
-		statement.executeUpdate(query.toString());
+		if (statement.executeUpdate(query.toString()) == 1) return true;
+		return false;
+	}
+	
+	public static boolean updateQuery(Statement statement, RegisteredItem updatedItem) throws SQLException {
+		StringBuilder query = new StringBuilder();
+		query.append("UPDATE Registration SET Owner_surname = '")
+			.append(updatedItem.ownerSurname())
+			.append("', Owner_name = '")
+			.append(updatedItem.ownerName())
+			.append("', Owner_lastname = '")
+			.append(updatedItem.ownerLastname())
+			.append("', Owner_departament = '")
+			.append(updatedItem.ownerDepartament())
+			.append("', Protected_label = '")
+			.append(updatedItem.protectedLabel())
+			.append("', Date = '")
+			.append(updatedItem.date())
+			.append("' WHERE Serial_number = '")
+			.append(updatedItem.serialNumber())
+			.append("';");
+		if (statement.executeUpdate(query.toString()) == 1) return true;
+		return false;
 	}
 	
 }
