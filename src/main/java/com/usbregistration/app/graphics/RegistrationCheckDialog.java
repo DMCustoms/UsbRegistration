@@ -1,5 +1,7 @@
 package com.usbregistration.app.graphics;
 
+import java.awt.Dimension;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -26,7 +28,7 @@ public class RegistrationCheckDialog extends JDialog {
 	public RegistrationCheckDialog(JFrame owner, RegisteredItem item) {
 		super(owner, "Проверка", ModalityType.APPLICATION_MODAL);
 		this.item = item;
-		setBounds(100, 100, 260, 245);
+		setSize(new Dimension(270, 245));
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setResizable(false);
 		initContentPane();

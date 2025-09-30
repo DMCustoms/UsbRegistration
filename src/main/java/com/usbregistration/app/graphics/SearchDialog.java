@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
@@ -51,12 +50,12 @@ public class SearchDialog extends JDialog {
 
 	public SearchDialog(JFrame context) {
 		super(context, "Поиск по БД", ModalityType.APPLICATION_MODAL);
-		setSize(new Dimension(700, 411));
+		setSize(new Dimension(720, 411));
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(context);
 		initContentPane();
-		setRootPane(contentPane);
+		setContentPane(contentPane);
 		setRegisteredItemsList();
 		setVisible(true);
 	}

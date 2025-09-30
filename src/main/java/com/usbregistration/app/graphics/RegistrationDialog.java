@@ -1,5 +1,6 @@
 package com.usbregistration.app.graphics;
 
+import java.awt.Dimension;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -50,7 +51,7 @@ public class RegistrationDialog extends JDialog {
 		super(context, "Регистрация", ModalityType.APPLICATION_MODAL);
 		this.usbItem = usbItem;
 		this.context = (MainFrame) context;
-		setBounds(100, 100, 377, 220);
+		setSize(new Dimension(377, 230));
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(context);
 		setResizable(false);
