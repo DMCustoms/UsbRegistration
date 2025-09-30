@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JRootPane;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import com.usbregistration.app.handlers.ConfirmRemovalHandler;
@@ -39,7 +40,7 @@ public class ConfirmDialog extends JDialog {
 		setSize(new Dimension(335, 177));
 		setResizable(false);
 		initContentPane();
-		setRootPane(contentPane);
+		setContentPane(contentPane);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(context);
 		setVisible(true);
