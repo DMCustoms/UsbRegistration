@@ -1,10 +1,9 @@
 package com.usbregistration.app.graphics;
 
-import java.awt.Dialog;
+import java.awt.Window;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JRootPane;
 import javax.swing.SwingConstants;
@@ -19,18 +18,7 @@ public class ModalDialog extends JDialog {
 	private JLabel message;
 	private JButton buttonOK;
 
-	public ModalDialog(JFrame owner, DialogMessages type) {
-		super(owner, "", ModalityType.APPLICATION_MODAL);
-		setBounds(100, 100, 300, 178);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setResizable(false);
-		setLocationRelativeTo(owner);
-		initContentPane(type);
-		setContentPane(contentPane);
-		setVisible(true);
-	}
-	
-	public ModalDialog(Dialog owner, DialogMessages type) {
+	public ModalDialog(Window owner, DialogMessages type) {
 		super(owner, "", ModalityType.APPLICATION_MODAL);
 		setBounds(100, 100, 300, 178);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
