@@ -1,7 +1,7 @@
 package com.usbregistration.app.items;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import net.codecrete.usb.UsbDevice;
 
@@ -13,26 +13,22 @@ public enum USBItemsList {
 	private USBItem[] usbItemsFiltered = null;
 	
 	public void setUSBDataList(Collection<UsbDevice> devices) {
-		usbItems = new USBItem[devices.size()];
-		ArrayList<USBItem> tmpList = new ArrayList<USBItem>();
-		String regex = ".*(disk|Disk|DISK).*";
-		int index = 0;
-		for (UsbDevice device : devices) {
-			USBItem tmpItem = new USBItem(device.getSerialNumber(), device.getProduct(), Integer.toString(device.getVendorId()), Integer.toString(device.getProductId()));
-			usbItems[index] = tmpItem;
-			if (device.getProduct() != null && device.getProduct().matches(regex)) tmpList.add(tmpItem);
-			index++;
-		}
-		index = 0;
-		usbItemsFiltered = new USBItem[tmpList.size()];
-		for (USBItem item : tmpList) {
-			usbItemsFiltered[index] = item;
-			index++;
-		}
+		usbItems = devices.stream().map(this::deviceToItemMapper).collect(Collectors.toList()).toArray(new USBItem[0]);
+		usbItemsFiltered = devices.stream().map(this::deviceToItemMapper).filter(this::filterDevicesByName).collect(Collectors.toList()).toArray(new USBItem[0]);
 	}
 	
 	public USBItem[] getUSBDataList(boolean isFiltered) {
 		if (isFiltered) return usbItemsFiltered;
 		return usbItems;
 	}
+	
+	private USBItem deviceToItemMapper(UsbDevice device) {
+		return new USBItem(device.getSerialNumber(), device.getProduct(), Integer.toString(device.getVendorId()), Integer.toString(device.getProductId()));
+	}
+	
+	private boolean filterDevicesByName(USBItem item) {
+		String regex = ".*(disk|Disk|DISK).*";
+		return item.productName() == null ? false : item.productName().matches(regex);
+	}
 }
+

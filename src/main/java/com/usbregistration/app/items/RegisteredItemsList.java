@@ -1,6 +1,7 @@
 package com.usbregistration.app.items;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public enum RegisteredItemsList {
 
@@ -9,12 +10,7 @@ public enum RegisteredItemsList {
 	private RegisteredItem[] registeredItems = null;
 	
 	public void setRegisteredItemsList(Collection<RegisteredItem> items) {
-		registeredItems = new RegisteredItem[items.size()];
-		int index = 0;
-		for (RegisteredItem item : items) {
-			registeredItems[index] = item;
-			index++;
-		}
+		registeredItems = items.stream().collect(Collectors.toList()).toArray(new RegisteredItem[0]);
 	}
 	
 	public RegisteredItem[] getRegisteredItemsDataList() {

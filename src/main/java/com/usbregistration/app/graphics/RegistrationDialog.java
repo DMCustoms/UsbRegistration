@@ -152,7 +152,7 @@ public class RegistrationDialog extends JDialog {
 		contentPane.add(reRegistration);
 		
 		confirmRegistration = new JButton("ОК");
-		confirmRegistration.setBounds(252, 133, 86, 27);
+		confirmRegistration.setBounds(252, 145, 86, 27);
 		confirmRegistration.addActionListener((ae) -> {
 			if (reRegistration.isSelected()) handler = new ReRegistrationHandler(this);
 			else handler = new ConfirmRegistrationButtonHandler(this);
