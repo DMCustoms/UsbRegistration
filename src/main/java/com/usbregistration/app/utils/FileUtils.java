@@ -6,13 +6,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.usbregistration.app.dbutils.DBUtils;
 import com.usbregistration.app.graphics.MainFrame;
 import com.usbregistration.app.graphics.ModalDialog;
 import com.usbregistration.app.types.DialogMessages;
 
-public class CFUtils {
+public class FileUtils {
 
-	private CFUtils() {
+	private FileUtils() {
 	}
 	
 	public static void createConfigureFile(String path, MainFrame context) {
@@ -45,5 +46,41 @@ public class CFUtils {
 		}
 		return result;
 	}
+	
+	public static void createExportFile(String path, String[] serialNumbers, MainFrame context) {
+		File exportFile = new File(path);
+		try {
+			if(exportFile.createNewFile()) {
+				try (FileWriter fw = new FileWriter(exportFile)) {
+					for (String serialNumber : serialNumbers) {
+						fw.write(serialNumber + "\n");
+					}
+				}
+				new ModalDialog(context, DialogMessages.EXPORT_COMPLETE);
+			} else {
+				new ModalDialog(context, DialogMessages.EXPORT_CREATION_ERROR);
+			}
+		} catch (IOException e) {
+			new ModalDialog(context, DialogMessages.IO_EXCEPTION);
+		}
+	}
+	
+	public static void createDBFile(String path, MainFrame context) {
+		File database = new File(path);
+		try {
+			if (database.createNewFile()) {
+				if (DBUtils.createDB(path, context)) new ModalDialog(context, DialogMessages.DATABASE_CREATE);
+			} else {
+				new ModalDialog(context, DialogMessages.DB_CREATION_ERROR);
+			}
+		} catch (IOException e1) {
+			new ModalDialog(context, DialogMessages.IO_EXCEPTION);
+		}
+	}
 }
+
+
+
+
+
 

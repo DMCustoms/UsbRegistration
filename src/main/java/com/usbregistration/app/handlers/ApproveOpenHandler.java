@@ -22,7 +22,7 @@ public class ApproveOpenHandler implements ApproveHandler {
 	@Override
 	public void approve() {
 		String path = fileChooser.getSelectedFile().getAbsolutePath();
-		if (DBUtils.connectDB(path, context))	new ModalDialog(context, DialogMessages.DATABASE_CONNECTED);
+		if (DBUtils.connectDB(path, context)) new ModalDialog(context, DialogMessages.DATABASE_CONNECTED);
 	}
 
 }

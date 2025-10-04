@@ -12,7 +12,8 @@ import com.usbregistration.app.interfaces.ButtonHandler;
 import com.usbregistration.app.items.USBItem;
 import com.usbregistration.app.types.DBStates;
 import com.usbregistration.app.types.DialogMessages;
-import com.usbregistration.app.utils.CFUtils;
+import com.usbregistration.app.types.FileChooserTypes;
+import com.usbregistration.app.utils.FileUtils;
 
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -40,6 +41,7 @@ public class MainFrame extends JFrame {
 	private JMenu jmFile;
 	private JMenu jmEdit;
 	private JCheckBoxMenuItem permitEditing;
+	private JMenuItem export;
 	private JMenu jmSearch;
 	private JMenuItem connectDBFile;
 	private JMenuItem createDBFile;
@@ -76,11 +78,11 @@ public class MainFrame extends JFrame {
 		
 		connectDBFile = new JMenuItem("Подключить файл БД", KeyEvent.VK_O);
 		connectDBFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-		connectDBFile.addActionListener((ae) -> new DBFileChooser(this, JFileChooser.OPEN_DIALOG, DialogMessages.OPEN_CHOOSER_TITLE));
+		connectDBFile.addActionListener((ae) -> new FileChooser(this, FileChooserTypes.CONNECT_DB));
 		
 		createDBFile = new JMenuItem("Создать файл БД", KeyEvent.VK_C);
 		createDBFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
-		createDBFile.addActionListener((ae) -> new DBFileChooser(this, JFileChooser.SAVE_DIALOG, DialogMessages.SAVE_CHOOSER_TITLE));
+		createDBFile.addActionListener((ae) -> new FileChooser(this, FileChooserTypes.CREATE_DB));
 		
 		exit = new JMenuItem("Выйти", KeyEvent.VK_E);
 		exit.addActionListener((ae) -> System.exit(0));
@@ -88,6 +90,11 @@ public class MainFrame extends JFrame {
 		
 		permitEditing = new JCheckBoxMenuItem("Запретить редактирование полей");
 		permitEditing.setSelected(true);
+		
+		export = new JMenuItem("Экспорт S/N");
+		export.setEnabled(false);
+		export.addActionListener((ae) -> new FileChooser(this, FileChooserTypes.EXPORT));
+		export.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
 		
 		openDB = new JMenuItem("Открыть БД", KeyEvent.VK_B);
 		openDB.addActionListener((ae) -> new SearchDialog(this));
@@ -102,6 +109,7 @@ public class MainFrame extends JFrame {
 		jmSearch.add(openDB);
 		
 		jmEdit.add(permitEditing);
+		jmEdit.add(export);
 		
 		jMenuBar.add(jmFile);
 		jMenuBar.add(jmEdit);
@@ -164,7 +172,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	private void preconnectDB() {
-		String path = CFUtils.readConfigureFile(this);
+		String path = FileUtils.readConfigureFile(this);
 		if (path != null) {
 			DBUtils.connectDB(path, this);
 		}
@@ -184,6 +192,7 @@ public class MainFrame extends JFrame {
 			createDBFile.setEnabled(false);
 			connectDBFile.setEnabled(false);
 			openDB.setEnabled(true);
+			export.setEnabled(true);
 			findDevices.setEnabled(true);
 		}
 		else if (state == DBStates.DATABASE_IS_DISCONNECTED) {
@@ -191,6 +200,7 @@ public class MainFrame extends JFrame {
 			createDBFile.setEnabled(true);
 			connectDBFile.setEnabled(true);
 			openDB.setEnabled(false);
+			export.setEnabled(false);
 			findDevices.setEnabled(false);
 		}
 	}

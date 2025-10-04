@@ -116,6 +116,16 @@ public class Queries {
 		return false;
 	}
 	
+	public static String[] selectSerialNumbersQuery(Statement statement) throws SQLException {
+		String query = "SELECT Serial_number FROM Registration;";
+		ResultSet rs = statement.executeQuery(query);
+		ArrayList<String> list = new ArrayList<String>();
+		while (rs.next()) {
+			list.add(rs.getString("Serial_number"));
+		}
+		return list.toArray(new String[0]);
+	}
+	
 }
 
 

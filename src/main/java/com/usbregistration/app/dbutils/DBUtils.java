@@ -8,7 +8,7 @@ import com.usbregistration.app.graphics.MainFrame;
 import com.usbregistration.app.graphics.ModalDialog;
 import com.usbregistration.app.types.DBStates;
 import com.usbregistration.app.types.DialogMessages;
-import com.usbregistration.app.utils.CFUtils;
+import com.usbregistration.app.utils.FileUtils;
 
 public class DBUtils {
 	
@@ -21,7 +21,7 @@ public class DBUtils {
 		try {
 			DBConnection.INSTANCE.openConnection(path);
 			DBConnection.INSTANCE.getStatement().executeUpdate(creatingQuery);
-			CFUtils.createConfigureFile(path, context);
+			FileUtils.createConfigureFile(path, context);
 			context.setDBState(DBStates.DATABASE_IS_CONNECTED);
 			return true;
 		} catch (SQLException e) {
@@ -44,7 +44,7 @@ public class DBUtils {
 					return false;
 				}
 			}
-			CFUtils.createConfigureFile(path, context);
+			FileUtils.createConfigureFile(path, context);
 			context.setDBState(DBStates.DATABASE_IS_CONNECTED);
 			return true;
 		} catch (SQLException e) {
