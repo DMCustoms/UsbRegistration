@@ -167,8 +167,8 @@ public class RegistrationDialog extends JDialog {
 		if (usbItem != null) {
 			serialNumberField.setText(usbItem.serialNumber());
 			productNameField.setText(usbItem.productName());
-			VIDField.setText(usbItem.vendorID());
-			PIDField.setText(usbItem.productID());
+			VIDField.setText(Integer.toString(usbItem.vendorID()));
+			PIDField.setText(Integer.toString(usbItem.productID()));
 		}
 	}
 	

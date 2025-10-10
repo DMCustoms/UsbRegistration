@@ -1,19 +1,15 @@
 package com.usbregistration.app.handlers;
 
-import java.util.Collection;
-
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
-
 import com.usbregistration.app.graphics.MainFrame;
+import com.usbregistration.app.graphics.ModalDialog;
 import com.usbregistration.app.interfaces.ButtonHandler;
+import com.usbregistration.app.items.USBItem;
 import com.usbregistration.app.items.USBItemsList;
-
-import net.codecrete.usb.Usb;
-import net.codecrete.usb.UsbDevice;
+import com.usbregistration.app.types.DialogMessages;
+import com.usbregistration.app.usbnative.NativeUsb;
 
 public class FindDevicesButtonHandler implements ButtonHandler {
 	
@@ -27,10 +23,15 @@ public class FindDevicesButtonHandler implements ButtonHandler {
 
 	@Override
 	public void handle() {
-		@NotNull @Unmodifiable Collection<UsbDevice> devices = Usb.getDevices();
-		USBItemsList.INSTANCE.setUSBDataList(devices);
-		if(filtration.isSelected()) context.setUSBList(USBItemsList.INSTANCE.getUSBDataList(true));
-		else context.setUSBList(USBItemsList.INSTANCE.getUSBDataList(false));	
+		try {
+			USBItem[] devices = NativeUsb.enumerateUsbDevices();
+			USBItemsList.INSTANCE.setUSBDataList(devices);
+			if(filtration.isSelected()) context.setUSBList(USBItemsList.INSTANCE.getUSBDataList(true));
+			else context.setUSBList(USBItemsList.INSTANCE.getUSBDataList(false));	
+		} catch (UnsatisfiedLinkError err) {
+			new ModalDialog(context, DialogMessages.LIBRARY_NOT_FOUND);
+			System.exit(-1);
+		}
 	}
 
 }

@@ -24,7 +24,8 @@ public enum DialogMessages {
 	QUERY_ERROR("Ошибка выполнения запроса"),
 	UPDATE_COMPLETE("Изменения внесены"),
 	IO_EXCEPTION("Ошибка ввода/вывода"),
-	UPDATE_FAIL("Ошибка внесения изменений");
+	UPDATE_FAIL("Ошибка внесения изменений"),
+	LIBRARY_NOT_FOUND("Отсутствует libnativeusb.so");
 	
 	public String value;
 	

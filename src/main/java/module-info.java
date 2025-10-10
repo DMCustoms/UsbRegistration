@@ -7,7 +7,5 @@ module UsbRegistration {
 	exports com.usbregistration.app.types;
 
 	requires transitive java.desktop;
-	requires transitive net.codecrete.usb;
-	requires transitive org.jetbrains.annotations;
 	requires transitive java.sql;
 }
